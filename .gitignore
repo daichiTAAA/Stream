@@ -162,5 +162,7 @@ cython_debug/
 # data
 **/*.mp4
 
+.DS_Store
+
 # src/get_video
 src/get_video/frames/*

@@ -1,0 +1,41 @@
+version: '3'
+services:
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    ports:
+      - '9092:9092' # External access port
+      - '29092:29092' # Internal access port
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://kafka:9092'
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: kafka
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      CLUSTER_ID: 'Mki3eEVBNTcwMTJeNDm2Qk'
+      TZ: 'Asia/Tokyo'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - kafka_network
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    ports:
+      - '9000:9000'
+    environment:
+      KAFKA_BROKERCONNECT: 'kafka:29092'
+      JVM_OPTS: '-Xms32M -Xmx64M'
+      SERVER_SERVLET_CONTEXTPATH: '/'
+      TZ: 'Asia/Tokyo'
+    networks:
+      - kafka_network
+
+networks:
+  kafka_network:
+    external: true

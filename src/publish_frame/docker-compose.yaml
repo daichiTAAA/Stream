@@ -1,0 +1,19 @@
+version: '3'
+services:
+  get_video:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    networks:
+      - kafka_network
+    volumes:
+      - frame_volume:/app/frames
+
+networks:
+  kafka_network:
+    external: true
+volumes:
+  frame_volume:
+    external: true
